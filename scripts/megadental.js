@@ -232,41 +232,48 @@ const getProductsdata = async (url, marque) => {
               json.dynamic.product_name[produit.id_variante].value;
 
             if (json.dynamic.code_mega)
-              products[idx].reference =
-                json.dynamic.code_mega[produit.id_variante].value;
+              if (json.dynamic.code_mega[produit.id_variante])
+                products[idx].reference =
+                  json.dynamic.code_mega[produit.id_variante].value;
 
             if (json.dynamic.sku)
-              products[idx].sku = json.dynamic.sku[produit.id_variante].value;
+              if (json.dynamic.sku[produit.id_variante])
+                products[idx].sku = json.dynamic.sku[produit.id_variante].value;
 
             if (json.dynamic.code_strong)
-              products[idx].code_strong =
-                json.dynamic.code_strong[produit.id_variante].value;
+              if (json.dynamic.code_strong[produit.id_variante])
+                products[idx].code_strong =
+                  json.dynamic.code_strong[produit.id_variante].value;
 
             products[idx].code_article_fournisseur = '';
 
             if (json.dynamic.product_description)
-              products[idx].descriptif = htmlToText(
-                json.dynamic.product_description[produit.id_variante].value
-              )
-                .split('\n')
-                .join('   ')
-                .split(/\\\//g)
-                .join("'");
+              if (json.dynamic.product_description[produit.id_variante])
+                products[idx].descriptif = htmlToText(
+                  json.dynamic.product_description[produit.id_variante].value
+                )
+                  .split('\n')
+                  .join('   ')
+                  .split(/\\\//g)
+                  .join("'");
 
             if (json.dynamic.dispo_medical)
-              products[idx].dispositif_medical =
-                json.dynamic.dispo_medical[produit.id_variante].value;
+              if (json.dynamic.dispo_medical[produit.id_variante])
+                products[idx].dispositif_medical =
+                  json.dynamic.dispo_medical[produit.id_variante].value;
 
             const prices = json.optionPrices[produit.id_variante];
 
             if (prices.basePrice)
-              products[idx].prix_reference = prices.basePrice.amount;
+              if (prices.basePrice[produit.id_variante])
+                products[idx].prix_reference = prices.basePrice.amount;
 
             if (prices.finalPrice)
-              products[idx].prix_promotion =
-                prices.basePrice.amount === prices.finalPrice.amount
-                  ? ''
-                  : prices.finalPrice.amount;
+              if (prices.finalPrice[produit.id_variante])
+                products[idx].prix_promotion =
+                  prices.basePrice.amount === prices.finalPrice.amount
+                    ? ''
+                    : prices.finalPrice.amount;
 
             let indexDegr = 1;
             prices.tierPrices.forEach((degr) => {
@@ -454,7 +461,11 @@ const getProductsdata = async (url, marque) => {
       });
     };
 
-    utils.scrapTemplate(url, fct, resolve);
+    utils.scrapTemplate(
+      'https://www.megadental.fr/demineralisateur-d-eau-osmoseur-a5.html',
+      fct,
+      resolve
+    );
   });
 };
 
