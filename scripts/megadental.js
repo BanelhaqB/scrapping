@@ -461,12 +461,27 @@ const getProductsdata = async (url, marque) => {
       });
     };
 
-    utils.scrapTemplate(
-      'https://www.megadental.fr/demineralisateur-d-eau-osmoseur-a5.html',
-      fct,
-      resolve
-    );
+    utils.scrapTemplate(url, fct, resolve);
   });
+};
+
+exports.getMissingproducts = async () => {
+  const toDo = (await utils.readCSV('data/megadental/produits.csv', ',')).map(
+    (e) => e.link
+  );
+
+  const done = (
+    await utils.readCSV('data/megadental/produits-data.csv', ',')
+  ).map((e) => e.url);
+
+  const missing = [];
+
+  toDo.forEach((e) => {
+    if (!done.includes(e)) missing.push({ link: e });
+  });
+
+  console.log(missing, missing.length);
+  await utils.convertToCSV(missing, 'data/megadental/produits-missing.csv');
 };
 
 // Scrap data
