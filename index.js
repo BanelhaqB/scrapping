@@ -12,7 +12,7 @@ const main = async () => {
   let data;
   switch (process.env.SITE) {
     case 'megadental':
-      data = await megadental.getMissingproducts();
+      data = await megadental.scrapProductsData();
       break;
     default:
       console.log('Site not supported yet');
