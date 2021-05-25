@@ -540,10 +540,7 @@ exports.scrapProductsLinks = async () => {
 
 // Scrap data
 exports.scrapProductsData = async () => {
-  const produits = await utils.readCSV(
-    'data/megadental/produits-missing.csv',
-    ','
-  );
+  const produits = await utils.readCSV('data/megadental/produits.csv', ',');
 
   let idx = 0;
   const startAt = `${new Date().getHours()}:${new Date().getMinutes()}`;
