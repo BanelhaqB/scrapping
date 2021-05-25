@@ -488,6 +488,25 @@ exports.getMissingproducts = async () => {
   await utils.convertToCSV(missing, 'data/megadental/produits-missing.csv');
 };
 
+exports.getMissingmarque = async () => {
+  const toDo = (await utils.readCSV('data/megadental/marques.csv', ',')).map(
+    (e) => e.name
+  );
+
+  const done = (await utils.readCSV('data/megadental/produits.csv', ',')).map(
+    (e) => e.marque
+  );
+
+  const missing = [];
+
+  toDo.forEach((e) => {
+    if (!done.includes(e)) missing.push({ name: e });
+  });
+
+  console.log(missing, missing.length);
+  await utils.convertToCSV(missing, 'data/megadental/marques-missing.csv');
+};
+
 // Scrap data
 exports.scrapProductsLinks = async () => {
   const marques = await utils.readCSV('data/megadental/marques.csv', ',');
