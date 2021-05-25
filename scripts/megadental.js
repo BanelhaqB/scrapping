@@ -544,13 +544,15 @@ exports.scrapProductsData = async () => {
 
   let idx = 0;
   const startAt = `${new Date().getHours()}:${new Date().getMinutes()}`;
+
   for await (const produit of produits) {
-    try {
-      await getProductsdata(produit.link, produit.marque);
-    } catch (error) {
-      console.log(`ERROR : ${error.msg}`);
-      utils.convertToCSV([error], 'data/megadental/ERR-produits-data.csv');
-    }
+    if (idx >= process.env.I * 1000 && idx < process.env.I * 1000 + 1001)
+      try {
+        await getProductsdata(produit.link, produit.marque);
+      } catch (error) {
+        console.log(`ERROR : ${error.msg}`);
+        utils.convertToCSV([error], 'data/megadental/ERR-produits-data.csv');
+      }
 
     idx++;
     utils.logProgress(idx, produits.length, `${produit.id}`, startAt);
