@@ -264,16 +264,12 @@ const getProductsdata = async (url, marque) => {
 
             const prices = json.optionPrices[produit.id_variante];
 
-            if (prices.basePrice)
-              if (prices.basePrice[produit.id_variante])
-                products[idx].prix_reference = prices.basePrice.amount;
+            products[idx].prix_reference = prices.basePrice.amount;
 
-            if (prices.finalPrice)
-              if (prices.finalPrice[produit.id_variante])
-                products[idx].prix_promotion =
-                  prices.basePrice.amount === prices.finalPrice.amount
-                    ? ''
-                    : prices.finalPrice.amount;
+            products[idx].prix_promotion =
+              prices.basePrice.amount === prices.finalPrice.amount
+                ? ''
+                : prices.finalPrice.amount;
 
             let indexDegr = 1;
             prices.tierPrices.forEach((degr) => {
@@ -456,7 +452,10 @@ const getProductsdata = async (url, marque) => {
         }
 
         // console.log(products);
-        await utils.convertToCSV(products, 'data/megadental/produits-data.csv');
+        await utils.convertToCSV(
+          products,
+          'data/megadental/produits-data2.csv'
+        );
         resolve();
       });
     };
