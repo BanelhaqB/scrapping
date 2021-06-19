@@ -4,6 +4,7 @@ const ObjectsToCsv = require('objects-to-csv');
 // const { resolve } = require('path');
 // const scrap = require('./scrap');
 const megadental = require('./scripts/megadental');
+const dpi = require('./scripts/dpi');
 const ico = require('./scripts/ico');
 
 // console.log(ffa);
@@ -13,7 +14,10 @@ const main = async () => {
   let data;
   switch (process.env.SITE) {
     case 'megadental':
-      data = await megadental.scrapProductsData();
+      data = await megadental.getMissingproducts();
+      break;
+    case 'dpi':
+      data = await dpi.scrapProductsData();
       break;
     case 'ico':
       data = await ico.scrap();
