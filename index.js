@@ -6,6 +6,7 @@ const ObjectsToCsv = require('objects-to-csv');
 const megadental = require('./scripts/megadental');
 const dpi = require('./scripts/dpi');
 const ico = require('./scripts/ico');
+const hs = require('./scripts/hs');
 
 // console.log(ffa);
 cheerio = cheerioAdv.wrap(cheerio);
@@ -21,6 +22,9 @@ const main = async () => {
       break;
     case 'ico':
       data = await ico.scrap();
+      break;
+    case 'hs':
+      data = await hs.scrapProductsData();
       break;
     default:
       console.log('Site not supported yet');
