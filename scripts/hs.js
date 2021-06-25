@@ -144,10 +144,10 @@ const getAttrOf = async (id, fct) => {
   });
 };
 
-const scrapDataOf = async (url) => {
+const scrapDataOf = async (produit) => {
   return new Promise(async (resolve) => {
     const isVariantes = await getAttrOf(
-      url.split('/')[9],
+      produit.url.split('/')[9],
       function (res, resolve2) {
         // console.log(res.body);
         resolve2(
@@ -187,7 +187,7 @@ const scrapDataOf = async (url) => {
       await utils.convertToCSV(varientes, 'data/hs/produits-url-varientes.csv');
     } else {
       const fct = async ($, response, html, config, dataArr) => {
-        const purl = url;
+        const purl = produit.url;
         const pmarque = $(
           '#ctl00_cphMainContentHarmony_ucProductSummary_ulProductSummary > li:nth-child(1) > h2 > small'
         )
@@ -196,21 +196,21 @@ const scrapDataOf = async (url) => {
           .split('-')[0]
           .trim();
 
-        const pid = url.split('/')[9];
-        const pattr1 = undefined;
-        const pvalattr1 = undefined;
-        const pattr2 = undefined;
-        const pvalattr2 = undefined;
-        const pattr3 = undefined;
-        const pvalattr3 = undefined;
-        const pattr4 = undefined;
-        const pvalattr4 = undefined;
-        const pattr5 = undefined;
-        const pvalattr5 = undefined;
-        const pattr6 = undefined;
-        const pvalattr6 = undefined;
-        const pattr7 = undefined;
-        const pvalattr7 = undefined;
+        const pid = produit.url.split('/')[9];
+        const pattr1 = produit.nom_attr_1;
+        const pvalattr1 = produit.val_attr_1;
+        const pattr2 = produit.nom_attr_2;
+        const pvalattr2 = produit.val_attr_2;
+        const pattr3 = produit.nom_attr_3;
+        const pvalattr3 = produit.val_attr_3;
+        const pattr4 = produit.nom_attr_4;
+        const pvalattr4 = produit.val_attr_4;
+        const pattr5 = produit.nom_attr_5;
+        const pvalattr5 = produit.val_attr_5;
+        const pattr6 = produit.nom_attr_6;
+        const pvalattr6 = produit.val_attr_6;
+        const pattr7 = produit.nom_attr_7;
+        const pvalattr7 = produit.val_attr_7;
         const pdes = $(
           '#ctl00_cphMainContentHarmony_ucProductSummary_ulProductSummary > li:nth-child(1) > h2'
         )
@@ -390,7 +390,7 @@ const scrapDataOf = async (url) => {
         resolve(p);
       };
 
-      utils.scrapTemplate(url, fct, resolve);
+      utils.scrapTemplate(produit.url, fct, resolve);
     }
   });
 };
@@ -426,9 +426,12 @@ exports.scrapProductsData = async () => {
   let idx = 0;
   const startAt = `${new Date().getHours()}:${new Date().getMinutes()}`;
 
-  const allProducts = await utils.readCSV('data/hs/produits-url.csv', ',');
+  const allProducts = await utils.readCSV(
+    'data/hs/produits-url-varientes.csv',
+    ','
+  );
   for await (const p of allProducts) {
-    await scrapDataOf(p.url);
+    await scrapDataOf(p);
     idx++;
     utils.logProgress(idx, allProducts.length, `Produit`, startAt);
   }
