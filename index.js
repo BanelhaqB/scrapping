@@ -7,6 +7,8 @@ const megadental = require('./scripts/megadental');
 const dpi = require('./scripts/dpi');
 const ico = require('./scripts/ico');
 const hs = require('./scripts/hs');
+const pd = require('./scripts/pd');
+const dv = require('./scripts/dv');
 
 // console.log(ffa);
 cheerio = cheerioAdv.wrap(cheerio);
@@ -25,6 +27,12 @@ const main = async () => {
       break;
     case 'hs':
       data = await hs.scrapProductsData();
+      break;
+    case 'pd':
+      data = await pd.scrapProductsData();
+      break;
+    case 'dv':
+      data = await dv.scrapProductsData();
       break;
     default:
       console.log('Site not supported yet');

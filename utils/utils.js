@@ -31,11 +31,14 @@ exports.readCSV = async (path, separator) => {
 exports.scrapTemplate = async (url, fct, resolve) => {
   scrap.get({
     url: url,
+    // referer:
+    //   'https://dentalversender.de/praxisbedarf/verbrauchsmaterial/?cat=21679',
     onSuccess: async ($, response, html, config) => {
       if (response.statusCode !== 200) {
         console.error(
-          `loading of ${config.url} failed, response code= ${response.statusCode}`
+          `loading of ${config.url} failed, response code= ${response.statusCode} ${response}`
         );
+        console.log(response.error, response.stack);
         resolve();
         return;
       }
@@ -69,4 +72,8 @@ exports.logProgress = (index, totale, name, startAt) => {
   console.log(
     `${name} : ${index}/${totale} ----- ${pourcentage}% ----- (start at : ${startAt})`
   );
+};
+
+exports.sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
