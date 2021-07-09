@@ -204,107 +204,109 @@ const fct2 = async (response, resolve, category) => {
   resolve();
 };
 
-const getDataFrom = async (url) => {
+const getDataFrom = async (produit) => {
   return new Promise((resolve) => {
     const fct1 = async ($, response, html, config, dataArr) => {
-      const vObj = $(
-        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div:nth-child(5) > form > div > div.select-field > select > option'
-      );
+      // const vObj = $(
+      //   'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div:nth-child(5) > form > div > div.select-field > select > option'
+      // );
 
-      const v = _.slice(Object.values(vObj), 0, Object.values(vObj).length - 4);
+      // const v = _.slice(Object.values(vObj), 0, Object.values(vObj).length - 4);
 
-      if (v.length > 0) {
-        const variantes = [];
-        v.forEach((variantO, index) => {
-          if (index < 7) {
-            const variante = $(variantO);
-            const varFile = {};
-            varFile.urlProd = url;
-            varFile.nom_attr_1 = 'vairante';
-            varFile.val_attr_1 = variante.text().trim();
-            varFile.id = variante.attr('value');
+      // if (v.length > 0) {
+      // const variantes = [];
+      // v.forEach((variantO, index) => {
+      //   if (index < 7) {
+      //     const variante = $(variantO);
+      //     const varFile = {};
+      //     varFile.urlProd = `${produit.urlProd.split('?')[0]}?group%5B532%5D=${
+      //       produit.id
+      //     }`;
+      //     varFile.nom_attr_1 = 'vairante';
+      //     varFile.val_attr_1 = variante.text().trim();
+      //     varFile.id = variante.attr('value');
 
-            variantes.push(varFile);
-          }
-        });
-        await utils.convertToCSV(
-          variantes,
-          'data/dv/produits-urls-variantes.csv'
-        );
-        // console.log(variantes);
-      } else {
-        const pmarque = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.nxs--manufacturer-container > div.article-manufacturer > a'
-        )
-          .text()
-          .trim();
+      //     variantes.push(varFile);
+      //   }
+      // });
+      // await utils.convertToCSV(
+      //   variantes,
+      //   'data/dv/produits-urls-variantes.csv'
+      // );
+      // console.log(variantes);
+      // } else {
+      const pmarque = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.nxs--manufacturer-container > div.article-manufacturer > a'
+      )
+        .text()
+        .trim();
 
-        const pdes = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > header > div > h1'
-        )
-          .text()
-          .trim();
+      const pdes = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > header > div > h1'
+      )
+        .text()
+        .trim();
 
-        const pref = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.article-nr'
-        )
-          .text()
-          .split(':')[1]
-          .trim();
+      const pref = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.article-nr'
+      )
+        .text()
+        .split(':')[1]
+        .trim();
 
-        const psku = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.nxs--manufacturer-container > div.base-info--entry.entry-attribute > span.entry--content'
-        )
-          .text()
-          .trim();
+      const psku = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-other-details > div > div.nxs--manufacturer-container > div.base-info--entry.entry-attribute > span.entry--content'
+      )
+        .text()
+        .trim();
 
-        const pdesc = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.tab-menu--product.js--tab-menu > div > div > div.content--description > div.product--description'
-        )
-          .text()
-          .trim();
+      const pdesc = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.tab-menu--product.js--tab-menu > div > div > div.content--description > div.product--description'
+      )
+        .text()
+        .trim();
 
-        const pprixref = $(
-          'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-white-container > div > span > meta'
-        ).attr('content');
+      const pprixref = $(
+        'body > div.page-wrap > section > div > div.content--wrapper > div > div.top-content > div.product--detail-upper.block-group > div.product--buybox.block > div > div.sx-white-container > div > span > meta'
+      ).attr('content');
 
-        const p = {
-          url,
-          marque: pmarque,
-          id_variante: url.split('=')[1],
-          nom_attr_1: undefined,
-          val_attr_1: undefined,
-          nom_attr_2: undefined,
-          val_attr_2: undefined,
-          nom_attr_3: undefined,
-          val_attr_3: undefined,
-          nom_attr_4: undefined,
-          val_attr_4: undefined,
-          nom_attr_5: undefined,
-          val_attr_5: undefined,
-          nom_attr_6: undefined,
-          val_attr_6: undefined,
-          nom_attr_7: undefined,
-          val_attr_7: undefined,
-          designation: pdes,
-          reference: pref,
-          sku: psku,
-          code_article_fournisseur: psku,
-          descritptif: pdesc,
-          prix_reference: pprixref,
-          prix_promo_unitaire: undefined,
-          quantite_degressif_1: undefined,
-          prix_promo_degressif_1: undefined,
-          quantite_degressif_2: undefined,
-          prix_promo_degressif_2: undefined,
-          quantite_degressif_3: undefined,
-          prix_promo_degressif_3: undefined,
-          quantite_degressif_4: undefined,
-          prix_promo_degressif_4: undefined,
-        };
+      const p = {
+        url: `${produit.urlProd.split('?')[0]}?group%5B532%5D=${produit.id}`,
+        marque: pmarque,
+        id_variante: produit.id,
+        nom_attr_1: produit.nom_attr_1,
+        val_attr_1: produit.val_attr_1,
+        nom_attr_2: undefined,
+        val_attr_2: undefined,
+        nom_attr_3: undefined,
+        val_attr_3: undefined,
+        nom_attr_4: undefined,
+        val_attr_4: undefined,
+        nom_attr_5: undefined,
+        val_attr_5: undefined,
+        nom_attr_6: undefined,
+        val_attr_6: undefined,
+        nom_attr_7: undefined,
+        val_attr_7: undefined,
+        designation: pdes,
+        reference: pref,
+        sku: psku,
+        code_article_fournisseur: psku,
+        descritptif: pdesc,
+        prix_reference: pprixref,
+        prix_promo_unitaire: undefined,
+        quantite_degressif_1: undefined,
+        prix_promo_degressif_1: undefined,
+        quantite_degressif_2: undefined,
+        prix_promo_degressif_2: undefined,
+        quantite_degressif_3: undefined,
+        prix_promo_degressif_3: undefined,
+        quantite_degressif_4: undefined,
+        prix_promo_degressif_4: undefined,
+      };
 
-        await utils.convertToCSV([p], 'data/dv/produits-data.csv');
-      }
+      await utils.convertToCSV([p], 'data/dv/produits-data.csv');
+      // }
       // const urls = [];
       // _.range(nbPages).forEach((page) => {
       //   urls.push({ url: `${category}?p=${page + 1}`, page: page + 1 });
@@ -315,7 +317,11 @@ const getDataFrom = async (url) => {
     };
 
     // console.log(2, category);
-    utils.scrapTemplate(url, fct1, resolve);
+    utils.scrapTemplate(
+      `${produit.urlProd.split('?')[0]}?group%5B532%5D=${produit.id}`,
+      fct1,
+      resolve
+    );
   });
 };
 
@@ -347,14 +353,17 @@ const scrapUrls = async () => {
 
 // Scrap data
 exports.scrapProductsData = async () => {
-  const allProducts = await utils.readCSV('data/dv/produits-urls.csv', ',');
+  const allProducts = await utils.readCSV(
+    'data/dv/produits-urls-variantes.csv',
+    ','
+  );
   let idx = 0;
   const startAt = `${new Date().getHours()}:${new Date().getMinutes()}`;
 
   for await (const product of allProducts) {
     if (idx % 2 === process.env.V * 1) {
-      await getDataFrom(product.url);
-      await utils.sleep(3000);
+      await getDataFrom(product);
+      await utils.sleep(1000);
       console.log(process.env.V);
     }
 
