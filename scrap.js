@@ -12,14 +12,15 @@ const scrap = function (req, config) {
       url: config.url,
       headers: {
         Referer: config.referer ? config.referer : config.url,
-        Host: 'www.dentalversender.de',
+        // Host: 'www.dentalversender.de',
         'User-Agent': randomUA.getRandom(),
         // 'Content-Type': `application/${config.contentType}`,
         Accept: '*/*',
         'Cache-Control': 'no-cache',
-        cookie:
-          'session-3=800abbf6a2f8022194ff1e3635c5e255573f695e48f2abe4f54080810cf0f3e4; nocache=detail-3',
+        // cookie:
+        //   'session-3=800abbf6a2f8022194ff1e3635c5e255573f695e48f2abe4f54080810cf0f3e4; nocache=detail-3',
       },
+
       form: config.form,
       body: config.body,
     },

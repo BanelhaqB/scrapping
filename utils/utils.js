@@ -44,6 +44,7 @@ exports.scrapTemplate = async (url, fct, resolve) => {
       }
 
       let data = [];
+
       data = await fct($, response, html, config, data);
 
       //   console.log(data);

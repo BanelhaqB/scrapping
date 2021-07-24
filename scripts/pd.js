@@ -11,6 +11,7 @@ const csvParser = require('csv-parser');
 const { htmlToText } = require('html-to-text');
 const scrap = require('../scrap');
 const utils = require('../utils/utils');
+const { reject } = require('lodash');
 
 // Get all marques
 const getAllCategories = async () => [
@@ -144,203 +145,151 @@ const getAllProductsUrl = async () => {
   }
 };
 
+const getvalattr = (attributes, code) => {
+  const index = _.findIndex(attributes, ['id', code]);
+  // console.log(attributes);
+  return attributes[index].label;
+};
+
 const scrapAllData = async (url) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const fct = async ($, response, html, config, dataArr) => {
-      const variantes = [];
+      try {
+        const variantes = [];
 
-      const vObj = $(
-        '#table_all_variations > div.all-variations > div:nth-child(2)'
-      );
-      console.log(
-        JSON.parse(
-          $("script[type='text/x-magento-init']")['9'].children[0].data
-        )['#product_addtocart_form'].configurable.spConfig
-      );
-      const v = _.slice(Object.values(vObj), 0, Object.values(vObj).length - 4);
-      // console.log(vObj.attr('class'), v);
-      v.forEach((variante) => {
-        const purl = url;
-        const pmarque = $('#product-attribute-specs-table > tbody > tr > td')
-          .text()
-          .trim();
+        const vObj = $(
+          '#table_all_variations > div.all-variations > div:nth-child(2)'
+        );
 
-        const pid = variante.attr('data-product-id');
-        const pattr1 = undefined;
-        const pvalattr1 = undefined;
-        const pattr2 = undefined;
-        const pvalattr2 = undefined;
-        const pattr3 = undefined;
-        const pvalattr3 = undefined;
-        const pattr4 = undefined;
-        const pvalattr4 = undefined;
-        const pattr5 = undefined;
-        const pvalattr5 = undefined;
-        const pattr6 = undefined;
-        const pvalattr6 = undefined;
-        const pattr7 = undefined;
-        const pvalattr7 = undefined;
-        const pdes = 'not yet';
-        const pref = pid;
-        const psku = pid;
-        const pcodef = pid;
-        const pdesc = $('#tabs-1 > div').text().trim();
+        if (
+          JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'] &&
+          JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable
+        ) {
+          const { attributes } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // const promo =
-        //   $(
-        //     '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(3)'
-        //   )
-        //     .text()
-        //     .trim() === 'Promotion';
+          const { index } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // let isDeg = false;
-        // if (promo) {
-        //   isDeg = $(
-        //     '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(2) > span'
-        //   )
-        //     .text()
-        //     .trim()
-        //     .includes('x');
-        // } else {
-        //   isDeg = $(
-        //     '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(1) > span:nth-child(2)'
-        //   )
-        //     .text()
-        //     .trim()
-        //     .includes('x');
-        // }
+          const { optionPrices } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // // console.log(promo, isDeg);
+          const { prices } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // const pprixref =
-        //   $(
-        //     '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'
-        //   )
-        //     .text()
-        //     .trim()
-        //     .split(' ')[0]
-        //     .replace(',', '.') * 1;
+          const { descriptions } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // let ppromouni = undefined;
-        // let pquantdeg1 = undefined;
-        // let pprixdeg1 = undefined;
+          const { skus } = JSON.parse(
+            $("script[type='text/x-magento-init']")['9'].children[0].data
+          )['#product_addtocart_form'].configurable.spConfig;
 
-        // if (isDeg) {
-        //   if (promo) {
-        //     ppromouni =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(2)'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[0] * 1;
+          // console.log(skus);
 
-        //     pquantdeg1 =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(2) > span'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[0]
-        //         .split('x')[1] * 1;
-        //     pprixdeg1 =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(2) > span'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[1] * 1;
-        //   } else {
-        //     pquantdeg1 =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(1) > span'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[0]
-        //         .split('x')[1] * 1;
-        //     pprixdeg1 =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(1) > span'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[1] * 1;
-        //   }
-        // }
+          // const v = _.slice(Object.values(vObj), 0, Object.values(vObj).length - 4);
+          const vs = [];
+          for (const [key, value] of Object.entries(skus)) {
+            // console.log(`${key} - ${value}`);
+            const p = { purl: url, pid: value };
+            // const pid = value;
+            let indexx = 1;
+            for (const [keyAttr, valueAttr] of Object.entries(
+              JSON.parse(
+                $("script[type='text/x-magento-init']")['9'].children[0].data
+              )['#product_addtocart_form'].configurable.spConfig.attributes
+            )) {
+              p[`pattr${indexx}`] = valueAttr.label;
+              p[`pvalattr${indexx}`] = getvalattr(
+                valueAttr.options,
+                index[`${key}`][`${keyAttr}`]
+              );
+              indexx++;
+            }
+            for (let i = indexx; i < 8; i++) {
+              p[`pattr${indexx}`] = undefined;
+              p[`pvalattr${indexx}`] = undefined;
+              indexx++;
+            }
 
-        // if (!isDeg) {
-        //   if (promo) {
-        //     ppromouni =
-        //       $(
-        //         '#ctl00_cphMainContentHarmony_ucProductSummary_ucPackagingOptions_rptProductList_ctl00_liProductAction > div:nth-child(1) > div:nth-child(1) > span:nth-child(2) > span:nth-child(1)'
-        //       )
-        //         .text()
-        //         .trim()
-        //         .replace(',', '.')
-        //         .split(' ')[0] * 1;
-        //   }
-        // }
+            p.pdes = $(descriptions[`${key}`]).text().split('\n')[0];
+            p.pdesc = $(descriptions[`${key}`]).text();
 
-        // let isVar = undefined;
-        // const isVar = $(
-        //   '#ctl00_cphMainContentHarmony_ucProductSummary_ulProductSummary > li:nth-child(5) > ul'
-        // )['0'];
+            p.pref = value;
+            p.psku = value;
+            p.pcodef = value;
+            p.pprixref = prices.oldPrice.amount;
+            p.ppromouni = prices.basePrice.amount;
+            let indexxx = 1;
+            for (const deg of optionPrices[`${key}`].tierPrices) {
+              p[`pquantdeg${indexxx}`] = deg.qty;
+              p[`pprixdeg${indexxx}`] = deg.price;
+              indexxx++;
+            }
+            for (let i = indexxx; i < 5; i++) {
+              p[`pquantdeg${indexxx}`] = undefined;
+              p[`pprixdeg${indexxx}`] = undefined;
+              indexxx++;
+            }
+            // console.log(p);
+            vs.push(p);
+          }
+          vs.forEach((p) => {
+            const produit = {
+              url: p.purl,
+              marque: p.pmarque,
+              id_variante: p.pid,
+              nom_attr_1: p.pattr1,
+              val_attr_1: p.pvalattr1,
+              nom_attr_2: p.pattr2,
+              val_attr_2: p.pvalattr2,
+              nom_attr_3: p.pattr3,
+              val_attr_3: p.pvalattr3,
+              nom_attr_4: p.pattr4,
+              val_attr_4: p.pvalattr4,
+              nom_attr_5: p.pattr5,
+              val_attr_5: p.pvalattr5,
+              nom_attr_6: p.pattr6,
+              val_attr_6: p.pvalattr6,
+              nom_attr_7: p.pattr7,
+              val_attr_7: p.pvalattr7,
+              designation: p.pdes,
+              reference: p.pref,
+              sku: p.psku,
+              code_article_fournisseur: p.pcodef,
+              descritptif: p.pdesc,
+              prix_reference: p.pprixref,
+              prix_promo_unitaire: p.ppromouni,
+              quantite_degressif_1: p.pquantdeg1,
+              prix_promo_degressif_1: p.pprixdeg1,
+              quantite_degressif_2: p.pquantdeg2,
+              prix_promo_degressif_2: p.pprixdeg2,
+              quantite_degressif_3: p.pquantdeg3,
+              prix_promo_degressif_3: p.pprixdeg3,
+              quantite_degressif_4: p.pquantdeg4,
+              prix_promo_degressif_4: p.pprixdeg4,
+            };
+            variantes.push(produit);
+          });
 
-        // console.log(promo, isDeg, isVar);
-
-        // const pquantdeg2 = undefined;
-        // const pprixdeg2 = undefined;
-        // const pquantdeg3 = undefined;
-        // const pprixdeg3 = undefined;
-        // const pquantdeg4 = undefined;
-        // const pprixdeg4 = undefined;
-
-        const p = {
-          url: purl,
-          marque: pmarque,
-          id_variante: pid,
-          nom_attr_1: pattr1,
-          val_attr_1: pvalattr1,
-          nom_attr_2: pattr2,
-          val_attr_2: pvalattr2,
-          nom_attr_3: pattr3,
-          val_attr_3: pvalattr3,
-          nom_attr_4: pattr4,
-          val_attr_4: pvalattr4,
-          nom_attr_5: pattr5,
-          val_attr_5: pvalattr5,
-          nom_attr_6: pattr6,
-          val_attr_6: pvalattr6,
-          nom_attr_7: pattr7,
-          val_attr_7: pvalattr7,
-          designation: pdes,
-          reference: pref,
-          sku: psku,
-          code_article_fournisseur: pcodef,
-          descritptif: pdesc,
-          // prix_reference: pprixref,
-          // prix_promo_unitaire: ppromouni,
-          // quantite_degressif_1: pquantdeg1,
-          // prix_promo_degressif_1: pprixdeg1,
-          // quantite_degressif_2: pquantdeg2,
-          // prix_promo_degressif_2: pprixdeg2,
-          // quantite_degressif_3: pquantdeg3,
-          // prix_promo_degressif_3: pprixdeg3,
-          // quantite_degressif_4: pquantdeg4,
-          // prix_promo_degressif_4: pprixdeg4,
-        };
-
-        variantes.push(p);
-      });
-      console.log(variantes, variantes.length);
-      // await utils.convertToCSV(variantes, 'data/hs/produits-data.csv');
-      resolve(variantes);
+          // });
+          // console.log(1, variantes, variantes.length);
+          await utils.convertToCSV(variantes, 'data/pd/produits-data.csv');
+          resolve(variantes);
+        } else {
+          reject('error');
+        }
+      } catch (error) {
+        reject('error');
+      }
     };
 
     utils.scrapTemplate(url, fct, resolve);
@@ -372,10 +321,16 @@ exports.scrapProductsData = async () => {
   //   idx++;
   //   utils.logProgress(idx, pages.length, `Page`, startAt);
   // }
-
-  await scrapAllData(
-    'https://www.promodentaire.com/serviettes-plastifiees-45x33cm-medibase-500.html'
-  );
+  const allProducts = await utils.readCSV('data/pd/produits-url.csv', ',');
+  for await (const p of allProducts) {
+    try {
+      await scrapAllData(p.url);
+    } catch (error) {
+      console.log('error');
+    }
+    idx++;
+    utils.logProgress(idx, allProducts.length, `Produit`, startAt);
+  }
 
   return [];
 };
