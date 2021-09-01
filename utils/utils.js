@@ -47,9 +47,9 @@ exports.scrapTemplate = async (url, fct, resolve) => {
 
       data = await fct($, response, html, config, data);
 
-      //   console.log(data);
+      // console.log(html);
 
-      resolve(data);
+      resolve(html);
     },
     onError: (error) => {
       console.log('error:', error);
