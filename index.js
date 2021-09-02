@@ -10,6 +10,7 @@ const hs = require('./scripts/hs');
 const pd = require('./scripts/pd');
 const dv = require('./scripts/dv');
 const kp = require('./scripts/kp');
+const yp = require('./scripts/yp');
 
 // console.log(ffa);
 cheerio = cheerioAdv.wrap(cheerio);
@@ -37,6 +38,9 @@ const main = async () => {
       break;
     case 'kp':
       data = await kp.scrapProductsData();
+      break;
+    case 'yp':
+      data = await yp.scrapProductsData();
       break;
     default:
       console.log('Site not supported yet');

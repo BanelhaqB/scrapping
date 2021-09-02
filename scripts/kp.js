@@ -39,27 +39,28 @@ const getAllCitiesFromCP = async (cp) => {
 };
 
 const getAllCities = async () => {
-  let cities = [];
+  // let cities = [];
   let idx = 0;
   const startAt = `${new Date().getHours()}:${new Date().getMinutes()}`;
   const allCP = await utils.readCSV('data/kp/cps.csv', ';');
   for await (const cp of allCP) {
-    // console.log(cp, cp.CP, await getAllCitiesFromCP(cp.CP));
-    cities = cities.concat(await getAllCitiesFromCP(cp.CP));
-    await utils.convertToCSV(cities, 'data/kp/cities-data2.csv');
+    await utils.convertToCSV(
+      await getAllCitiesFromCP(cp.CP),
+      'data/kp/cities-data2.csv'
+    );
     idx++;
     utils.logProgress(idx, allCP.length, `Code Postal`, startAt);
   }
 
   //   console.log(cities, cities.length);
 
-  await utils.convertToCSV(cities, 'data/kp/cities-data2.csv');
-  return cities;
+  // await utils.convertToCSV(cities, 'data/kp/cities-data2.csv');
+  // return cities;
 };
 
 // Scrap data
 exports.scrapProductsData = async () => {
-  const cities = await getAllCities();
-  console.log(cities, cities.length);
+  await getAllCities();
+  // console.log(cities, cities.length);
   return [];
 };
