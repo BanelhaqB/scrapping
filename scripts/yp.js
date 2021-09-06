@@ -101,7 +101,7 @@ exports.scrapProductsData = async () => {
 
   let idx2 = 0;
   for await (const p of allProfs) {
-    if (idx === process.env.V * 1 + idx2 * 3) {
+    if (idx === process.env.V * 1 + idx2 * 10) {
       try {
         await scrapAllData(p.url, p.prenom, p.nom, p.tel, p.id);
       } catch (error) {
