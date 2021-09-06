@@ -28,8 +28,15 @@ const scrapAllData = async (url, prenom, nom, tel, id) => {
           .text()
           .trim()
           .split(', ')[1]
-          .split(' an')[0]
-          .replace('Plus de ', '+'),
+          ? $(
+              '#profile-sitter-header > div > div > div.col-md-11.main.col-xs-16 > div > div > div > div.col-md-12.ad-applicant-profil-infos.col-xs-16 > ul.list-inline.list-unstyled.ad-applicant-experiences.row > li > p'
+            )
+              .text()
+              .trim()
+              .split(', ')[1]
+              .split(' an')[0]
+              .replace('Plus de ', '+')
+          : 'none',
         description: `${$(
           '#profile-sitter-content > div > div:nth-child(1) > div > div > div > h3'
         )
