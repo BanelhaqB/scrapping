@@ -13,6 +13,7 @@ const scrapAllData = async (url, prenom, nom, tel, id) => {
     const fct = async ($, response, html, config, dataArr) => {
       const prof = {
         id,
+        url,
         prenom,
         nom,
         tel,
