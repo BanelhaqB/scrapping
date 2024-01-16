@@ -1,8 +1,3 @@
-let cheerio = require('cheerio');
-const cheerioAdv = require('cheerio-advanced-selectors');
-const ObjectsToCsv = require('objects-to-csv');
-// const { resolve } = require('path');
-// const scrap = require('./scrap');
 const megadental = require('./scripts/megadental');
 const dpi = require('./scripts/dpi');
 const ico = require('./scripts/ico');
@@ -11,9 +6,7 @@ const pd = require('./scripts/pd');
 const dv = require('./scripts/dv');
 const kp = require('./scripts/kp');
 const yp = require('./scripts/yp');
-
-// console.log(ffa);
-cheerio = cheerioAdv.wrap(cheerio);
+const ttp = require('./scripts/ttp');
 
 const main = async () => {
   let data;
@@ -42,8 +35,11 @@ const main = async () => {
     case 'yp':
       data = await yp.scrapProductsData();
       break;
+    case 'ttp':
+      data = await ttp.scrap();
+      break;
     default:
-      console.log('Site not supported yet');
+      console.log('command not supported yet');
       break;
   }
 
