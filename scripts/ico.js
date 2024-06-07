@@ -1,7 +1,7 @@
-const utils = require('../utils/utils');
+import { utils } from '../utils/utils';
 
 // Get all marques
-const getAllProjets = async () => {
+async function getAllProjets() {
   return new Promise((resolve) => {
     const fct = async ($, response, html, config, dataArr) => {
       return new Promise(async (resolve) => {
@@ -45,10 +45,10 @@ const getAllProjets = async () => {
       resolve
     );
   });
-};
+}
 
-exports.scrap = async () => {
+export default async function scrap() {
   const projets = await getAllProjets();
 
   return projets;
-};
+}

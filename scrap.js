@@ -1,12 +1,11 @@
-const request = require('request');
-let cheerio = require('cheerio');
-const cheerioAdv = require('cheerio-advanced-selectors');
-const randomUA = require('random-fake-useragent');
-const { cookie } = require('request');
+import request from 'request';
+import cheerio from 'cheerio';
+import cheerioAdv from 'cheerio-advanced-selectors';
+import randomUA from 'random-fake-useragent';
 
-cheerio = cheerioAdv.wrap(cheerio);
+const cheerioWrapped = cheerioAdv.wrap(cheerio);
 
-const scrap = function (req, config) {
+const scraper = function (req, config) {
   req(
     {
       url: config.url,
@@ -26,7 +25,7 @@ const scrap = function (req, config) {
     },
     function (error, response, html) {
       if (!error) {
-        const $ = cheerio.load(html);
+        const $ = cheerioWrapped.load(html);
         config.onSuccess($, response, html, config);
       } else {
         config.onError(error, response, html, config);
@@ -35,7 +34,9 @@ const scrap = function (req, config) {
   );
 };
 
-module.exports = {
-  get: (config) => scrap(request.get, config),
-  post: (config) => scrap(request.post, config),
+const scrap = {
+  get: (config) => scraper(request.get, config),
+  post: (config) => scraper(request.post, config),
 };
+
+export default scrap;

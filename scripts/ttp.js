@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable node/no-unsupported-features/es-syntax */
-const _ = require('lodash');
-const request = require('request');
-const randomUA = require('random-fake-useragent');
-const utils = require('../utils/utils');
+import _ from 'lodash';
+import request from 'request';
+import randomUA from 'random-fake-useragent';
+
+import utils from '../utils/utils.js';
 
 const isTeacherProfile = async (id) => {
   return new Promise((resolve) => {
@@ -227,20 +228,25 @@ const scrapConversations = async () => {
   await utils.convertToCSV(teachersWithData, 'data/ttp/teachers-with-data.csv');
 };
 
-exports.scrap = async () => {
-  const { action } = process.env;
-  switch (action) {
-    case 'get-teachers-list':
-      await getTeacherIds();
-      break;
-    case 'send-messages':
-      await sendMessages();
-      break;
-    case 'get-teachers-data':
-      await scrapConversations();
-      break;
-    default:
-      break;
-  }
-  return [];
+// eslint-disable-next-line no-undef
+const ttp = {
+  scrapper: async () => {
+    const { action } = process.env;
+    switch (action) {
+      case 'get-teachers-list':
+        await getTeacherIds();
+        break;
+      case 'send-messages':
+        await sendMessages();
+        break;
+      case 'get-teachers-data':
+        await scrapConversations();
+        break;
+      default:
+        break;
+    }
+    return [];
+  },
 };
+
+export default ttp;
