@@ -194,7 +194,7 @@ const fetchAllAnnonces = async (idxOfChunk) => {
       if (phone) {
         await utils.convertToCSV(
           [{ id: annonce.id, phone, url: annonce.url }],
-          `data/voscours/data.csv`,
+          `data/voscours/data-${idxOfChunk}.csv`,
           true
         );
       }
