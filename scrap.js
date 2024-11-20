@@ -16,8 +16,8 @@ const scraper = function (req, config) {
         // 'Content-Type': `application/${config.contentType}`,
         Accept: '*/*',
         'Cache-Control': 'no-cache',
-        // cookie:
-        //   'session-3=800abbf6a2f8022194ff1e3635c5e255573f695e48f2abe4f54080810cf0f3e4; nocache=detail-3',
+        Cookie: config.cookie,
+        Host: config.host,
       },
 
       form: config.form,

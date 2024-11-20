@@ -1,24 +1,23 @@
 /* eslint-disable import/extensions */
 import ttp from "./scripts/ttp.js";
-import voscours from "./scripts/voscours.js";
+import voscours2 from "./scripts/voscours.v2.js";
 
 const main = async () => {
-  let data;
-  console.log(process.env.site);
+  console.log(process.env.site, " --> ", process.env.action);
+
   switch (process.env.site) {
     case "ttp":
-      data = await ttp.scrapper();
+      await ttp.scrapper();
       break;
     case "voscours":
-      data = await voscours.scrapper();
+      await voscours2.scrapper(process.env.action);
       break;
     default:
-      data = [];
       console.log("command not supported yet");
       break;
   }
 
-  console.log(`Done! ${data.length} items imported succefuly`);
+  console.log(`Done!`);
 };
 
 main();

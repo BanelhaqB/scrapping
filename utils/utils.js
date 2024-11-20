@@ -6,10 +6,10 @@ import fs from 'fs';
 import scraper from '../scrap.js';
 
 const utils = {
-  convertToCSV: async (obj, path) => {
+  convertToCSV: async (obj, path, append) => {
     const csv = new ObjectsToCsv(obj);
 
-    await csv.toDisk(path, { append: true });
+    await csv.toDisk(path, { append });
   },
 
   readCSV: async (path, separator) => {
