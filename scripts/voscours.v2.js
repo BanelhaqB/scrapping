@@ -6,11 +6,12 @@ import _ from "lodash";
 // eslint-disable-next-line import/no-unresolved,node/no-missing-import
 import * as fs from "node:fs/promises";
 // eslint-disable-next-line import/extensions
+import process from "html-to-text/.eslintrc.js";
 import utils from "../utils/utils.js";
 
 const cheerioWrapped = cheerioAdv.wrap(cheerio);
 
-const NUMBER_OF_CHUNKS = 10;
+const NUMBER_OF_CHUNKS = 4;
 
 const USER_ID = 6664700;
 const USER_EMAIL = "n7ihkj5d6ncr@mozmail.com";
@@ -156,30 +157,10 @@ const getPhone = async (idAnnonce) => {
 };
 
 const fetchAllAnnonces = async (idxOfChunk) => {
-  const annonces = await utils.readCSV(
-    "data/voscours/urls/urls-voscours.csv",
-    ","
-  );
-
-  const processed = await utils.readCSV("data/voscours/processed.csv", ",");
-
-  const annonceToProcess = _.filter(
-    annonces,
-    (a) =>
-      !_.includes(
-        processed.map((p) => p.id),
-        a.id
-      )
-  );
-
-  console.log(
-    `Skipping ${
-      annonces.length - annonceToProcess.length
-    } urls already proceeded`
-  );
+  const annonces = await utils.readCSV("data/voscours/urls/urls-left.csv", ",");
 
   const chunks = _.chunk(
-    annonceToProcess,
+    annonces,
     Math.floor(annonces.length / NUMBER_OF_CHUNKS)
   );
 
@@ -206,9 +187,11 @@ const fetchAllAnnonces = async (idxOfChunk) => {
       );
 
       console.log(
-        `Annonce ${annonce.id} ${i}/${chunk.length} [${
-          Math.floor((i / chunk.length) * 100) / 100
-        }%] - ${phone ? `📞 ${phone}` : "no phone"}`
+        `Chunk number : ${idxOfChunk}. Annonce ${annonce.id} ${i}/${
+          chunk.length
+        } [${Math.floor((i / chunk.length) * 100)}%] - ${
+          phone ? `📞 ${phone}` : "no phone"
+        }`
       );
     } catch (e) {
       await utils.convertToCSV(
@@ -218,9 +201,9 @@ const fetchAllAnnonces = async (idxOfChunk) => {
       );
 
       console.log(
-        `Annonce ${annonce.id} ${i}/${chunk.length} [${
-          Math.floor((i / chunk.length) * 100) / 100
-        }%] - ❌  Error : ${e}`
+        `Chunk number : ${idxOfChunk}. Annonce ${annonce.id} ${i}/${
+          chunk.length
+        } [${Math.floor((i / chunk.length) * 100)}%] - ❌  Error : ${e}`
       );
     }
   }
