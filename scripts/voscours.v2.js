@@ -6,7 +6,6 @@ import _ from "lodash";
 // eslint-disable-next-line import/no-unresolved,node/no-missing-import
 import * as fs from "node:fs/promises";
 // eslint-disable-next-line import/extensions
-import process from "html-to-text/.eslintrc.js";
 import utils from "../utils/utils.js";
 
 const cheerioWrapped = cheerioAdv.wrap(cheerio);
